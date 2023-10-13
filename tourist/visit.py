@@ -2,9 +2,27 @@ from fastapi import APIRouter, HTTPException, status
 from places.destination import Tour, TourBasicInfo, TourInput, TourLocation, \
                                tours, tours_basic_info, tours_locations
 from uuid import UUID, uuid1
+from login.user import approved_users
+from datetime import datetime 
+from pydantic import BaseModel
+from typing import List
 
 
 router = APIRouter()
+
+tour_references = set()
+
+class Visit(BaseModel):
+    id: UUID
+    destination: List[TourBasicInfo]
+    last_tour: datetime
+
+class Booking(BaseModel):
+    id: UUID
+    destination: TourBasicInfo
+    booking_date: datetime
+    tourist_id: UUID
+
 
 @router.post("/tourist/tour/booking/add")
 def create_booking(tour: TourBasicInfo, touristId: UUID):
